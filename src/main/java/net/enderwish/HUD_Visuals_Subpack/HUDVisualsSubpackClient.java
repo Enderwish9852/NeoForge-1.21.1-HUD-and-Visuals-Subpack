@@ -8,7 +8,7 @@ import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 /**
  * Handles the "Client-Side" setup for the HUD.
  */
-public class ExampleModClient {
+public class HUDVisualsSubpackClient {
 
     public static void onRegisterGuiLayers(RegisterGuiLayersEvent event) {
         event.registerAbove(
