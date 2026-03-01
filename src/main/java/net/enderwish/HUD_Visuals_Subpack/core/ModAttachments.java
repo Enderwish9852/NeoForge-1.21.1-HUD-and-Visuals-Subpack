@@ -1,6 +1,7 @@
 package net.enderwish.HUD_Visuals_Subpack.core;
 
 import net.enderwish.HUD_Visuals_Subpack.HUDVisualsSubpack;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -17,4 +18,12 @@ public class ModAttachments {
                     .serialize(WristCapability.CODEC)
                     .copyOnDeath()
                     .build());
+
+    /**
+     * Call this in your main mod constructor:
+     * ModAttachments.register(modEventBus);
+     */
+    public static void register(IEventBus eventBus) {
+        ATTACHMENT_TYPES.register(eventBus);
+    }
 }

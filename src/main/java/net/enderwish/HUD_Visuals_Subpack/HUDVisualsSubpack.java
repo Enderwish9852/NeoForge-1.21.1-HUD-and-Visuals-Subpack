@@ -28,7 +28,7 @@ public class HUDVisualsSubpack {
         // Register Data Attachments (Limb Data storage)
         ModAttachments.ATTACHMENT_TYPES.register(modEventBus);
 
-        // Register Networking Payloads (including LimbSyncS2CPacket)
+        // Register Networking Payloads
         modEventBus.addListener(this::registerNetworking);
 
         // --- FORGE BUS REGISTRATION ---
@@ -45,7 +45,6 @@ public class HUDVisualsSubpack {
 
     /**
      * Registers custom network payloads using the NeoForge RegisterPayloadHandlersEvent.
-     * This is required to sync limb data from the server to the client's SportsWatchHUD.
      */
     private void registerNetworking(final RegisterPayloadHandlersEvent event) {
         ModMessages.register(event);
@@ -53,7 +52,6 @@ public class HUDVisualsSubpack {
 
     /**
      * Handles the registration and modification of HUD elements.
-     * This runs on the Mod Event Bus.
      */
     private void onRegisterGuiLayers(RegisterGuiLayersEvent event) {
         // Register the custom Sports Watch HUD above the Hotbar
@@ -63,7 +61,7 @@ public class HUDVisualsSubpack {
                 SportsWatchHUD.SPORTS_WATCH_ELEMENT
         );
 
-        // Hide specific Vanilla HUD layers to make room for the new UI
+        // Hide specific Vanilla HUD layers using the requested replacement method
         event.replaceLayer(VanillaGuiLayers.PLAYER_HEALTH, (gui, delta) -> {});
         event.replaceLayer(VanillaGuiLayers.FOOD_LEVEL, (gui, delta) -> {});
         event.replaceLayer(VanillaGuiLayers.ARMOR_LEVEL, (gui, delta) -> {});

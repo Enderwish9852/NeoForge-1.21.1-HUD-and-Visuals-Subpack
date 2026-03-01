@@ -11,14 +11,16 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 public class ModMessages {
 
     /**
-     * This method must be called from your main class constructor like this:
-     * modEventBus.addListener(ModMessages::register);
+     * Registers the networking channel and payloads.
+     * Ensure this is called via: modEventBus.addListener(ModMessages::register);
      */
     public static void register(final RegisterPayloadHandlersEvent event) {
+        // Use a versioned registrar to prevent client/server mismatches
         final PayloadRegistrar registrar = event.registrar(HUDVisualsSubpack.MOD_ID)
                 .versioned("1.0");
 
-        // Register the LimbSyncPacket so the client can receive data from the server
+        // playToClient means Server -> Client (S2C)
+        // This is where the HUD data is sent to the player's screen
         registrar.playToClient(
                 LimbSyncPacket.TYPE,
                 LimbSyncPacket.STREAM_CODEC,
@@ -26,6 +28,10 @@ public class ModMessages {
         );
     }
 
+    /**
+     * Helper to send a packet to a specific player.
+     * Useful for syncing limb data when damage occurs or on login.
+     */
     public static void sendToPlayer(CustomPacketPayload packet, ServerPlayer player) {
         PacketDistributor.sendToPlayer(player, packet);
     }
