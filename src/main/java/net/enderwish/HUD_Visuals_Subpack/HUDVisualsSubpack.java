@@ -2,6 +2,7 @@ package net.enderwish.HUD_Visuals_Subpack;
 
 import net.enderwish.HUD_Visuals_Subpack.client.gui.SportsWatchHUD;
 import net.enderwish.HUD_Visuals_Subpack.core.LimbDamageEventHandler;
+import net.enderwish.HUD_Visuals_Subpack.core.LimbDataProvider;
 import net.enderwish.HUD_Visuals_Subpack.core.ModAttachments;
 import net.enderwish.HUD_Visuals_Subpack.event.HealthRegenEvents;
 import net.enderwish.HUD_Visuals_Subpack.network.ModMessages;
@@ -36,6 +37,9 @@ public class HUDVisualsSubpack {
         // Register server-side events for health and limb logic
         NeoForge.EVENT_BUS.register(new HealthRegenEvents());
         NeoForge.EVENT_BUS.register(new LimbDamageEventHandler());
+        //Register Limb Health
+        LimbDataProvider.register(modEventBus);
+
 
         // --- CLIENT SETUP ---
         if (FMLEnvironment.dist.isClient()) {
