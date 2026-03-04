@@ -28,18 +28,16 @@ import java.util.function.Supplier;
 public class HUDVisualsSubpack {
     public static final String MOD_ID = "gh_hud_visuals";
 
-    // Registries
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MOD_ID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MOD_ID);
 
-    // Register the Sports Watch using the custom class
     public static final DeferredItem<Item> SPORTS_WATCH = ITEMS.register("sports_watch",
             () -> new SportsWatchItem(new Item.Properties()));
 
-    // Creative Tab setup
-    public static final Supplier<CreativeModeTab> SPORTS_TAB = CREATIVE_TABS.register("sports_tab",
+    // FIXED: Changed internal registry name from "sports_tab" to "greyhorizons_tab"
+    public static final Supplier<CreativeModeTab> GREY_HORIZONS_TAB = CREATIVE_TABS.register("greyhorizons_tab",
             () -> CreativeModeTab.builder()
-                    .title(Component.translatable("creativetab.sports_tab"))
+                    .title(Component.translatable("creativetab.grey_horizons"))
                     .icon(() -> new ItemStack(SPORTS_WATCH.get()))
                     .displayItems((parameters, output) -> {
                         output.accept(SPORTS_WATCH.get());
@@ -47,21 +45,15 @@ public class HUDVisualsSubpack {
                     .build());
 
     public HUDVisualsSubpack(IEventBus modEventBus) {
-        // Registering registries to the bus
         ITEMS.register(modEventBus);
         CREATIVE_TABS.register(modEventBus);
-
-        // Capability registration
         ModAttachments.register(modEventBus);
 
-        // Network registration
         modEventBus.addListener(this::registerNetworking);
 
-        // Global Event Bus registrations
         NeoForge.EVENT_BUS.register(new HealthRegenEvents());
         NeoForge.EVENT_BUS.register(LimbDamageEventHandler.class);
 
-        // Client-side only registrations
         if (FMLEnvironment.dist.isClient()) {
             modEventBus.addListener(this::onRegisterGuiLayers);
         }
@@ -72,14 +64,12 @@ public class HUDVisualsSubpack {
     }
 
     private void onRegisterGuiLayers(RegisterGuiLayersEvent event) {
-        // Registers your custom Watch HUD above the hotbar
         event.registerAbove(
                 VanillaGuiLayers.HOTBAR,
                 ResourceLocation.fromNamespaceAndPath(MOD_ID, "sports_watch"),
                 (graphics, delta) -> SportsWatchHUD.SPORTS_WATCH_ELEMENT.render(graphics, delta)
         );
 
-        // Hide vanilla HUD elements to make room for the watch display
         event.replaceLayer(VanillaGuiLayers.PLAYER_HEALTH, (gui, delta) -> {});
         event.replaceLayer(VanillaGuiLayers.FOOD_LEVEL, (gui, delta) -> {});
         event.replaceLayer(VanillaGuiLayers.ARMOR_LEVEL, (gui, delta) -> {});

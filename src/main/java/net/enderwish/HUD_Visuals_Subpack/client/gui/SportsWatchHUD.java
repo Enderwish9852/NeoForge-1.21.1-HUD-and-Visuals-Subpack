@@ -11,17 +11,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 /**
- * SPORTS WATCH HUD LOGIC
- * Positioned at the bottom right.
- * No image background - uses a drawn semi-transparent rectangle for readability.
+ * SPORTS WATCH HUD
+ * Updated with specific texture coordinates for all limbs including feet.
  */
 public class SportsWatchHUD {
 
     private static final ResourceLocation LIMBS_TEXTURE = ResourceLocation.fromNamespaceAndPath(HUDVisualsSubpack.MOD_ID, "textures/gui/limbs.png");
 
-    // HUD Dimensions
-    private static final int HUD_WIDTH = 100;
-    private static final int HUD_HEIGHT = 70;
+    private static final int BASE_WIDTH = 100;
+    private static final int BASE_HEIGHT = 75;
     private static final int MARGIN = 10;
 
     public static final LayeredDraw.Layer SPORTS_WATCH_ELEMENT = (graphics, delta) -> {
@@ -36,48 +34,86 @@ public class SportsWatchHUD {
         int screenWidth = mc.getWindow().getGuiScaledWidth();
         int screenHeight = mc.getWindow().getGuiScaledHeight();
 
-        // Position: Bottom Right
-        int x = screenWidth - HUD_WIDTH - MARGIN;
-        int y = screenHeight - HUD_HEIGHT - MARGIN;
-
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 
-        // 1. Draw a "Glass" Background Rectangle
-        // Instead of an image, we draw a dark box so we can see our white text/icons.
-        // Color is (Black, 40% Transparency)
-        graphics.fill(x, y, x + HUD_WIDTH, y + HUD_HEIGHT, 0x66000000);
+        // --- POSITIONING CONSTANTS FOR BARS ---
+        int leftX = screenWidth / 2 - 91;  // Energy (Vanilla Health pos)
+        int rightX = screenWidth / 2 + 10; // Hunger/Thirst (Vanilla Hunger pos)
+        int row1Y = screenHeight - 39;     // Bottom Row
+        int row2Y = screenHeight - 51;     // Top Row (Thirst)
 
-        // Optional: Draw a thin border
-        graphics.renderOutline(x, y, HUD_WIDTH, HUD_HEIGHT, 0xFFFFFFFF);
+        // 1. STATUS BARS
+        drawStatusBar(graphics, mc, leftX, row1Y, cap.getEnergy(), 0xFF00AAFF, "ENERGY");
+        float foodLevel = (player.getFoodData().getFoodLevel() / 20.0f) * 100.0f;
+        drawStatusBar(graphics, mc, rightX, row1Y, foodLevel, 0xFFFF9900, "HUNGER");
+        drawStatusBar(graphics, mc, rightX, row2Y, 100f, 0xFF00FFFF, "THIRST");
 
-        // 2. Draw Limb Indicators
-        // Coordinates and UVs stay the same.
-        drawLimb(graphics, x + 44, y + 8,  0,  0, 12, 12, cap.getHeadPct());      // Head
-        drawLimb(graphics, x + 40, y + 21, 12, 0, 20, 24, cap.getTorsoPct());     // Torso
-        drawLimb(graphics, x + 28, y + 21, 32, 0, 11, 22, cap.getLArmPct());      // Left Arm
-        drawLimb(graphics, x + 61, y + 21, 43, 0, 11, 22, cap.getRArmPct());      // Right Arm
-        drawLimb(graphics, x + 40, y + 46, 54, 0, 9,  20, cap.getLLegPct());      // Left Leg
-        drawLimb(graphics, x + 51, y + 46, 63, 0, 9,  20, cap.getRLegPct());      // Right Leg
+        // --- WATCH FACE (Bottom Right, 2x Scale) ---
+        int watchX = screenWidth - (BASE_WIDTH * 2) - MARGIN;
+        int watchY = screenHeight - (BASE_HEIGHT * 2) - MARGIN;
 
-        // Feet
-        drawLimb(graphics, x + 38, y + 60, 72, 0, 10, 6, cap.getLFootPct());      // Left Foot
-        drawLimb(graphics, x + 52, y + 60, 82, 0, 10, 6, cap.getRFootPct());      // Right Foot
+        graphics.pose().pushPose();
+        graphics.pose().translate(watchX, watchY, 0);
+        graphics.pose().scale(2.0F, 2.0F, 1.0F);
 
-        // 3. Draw Text Stats
-        // We add shadows to text to make it stand out even more.
-        graphics.drawString(mc.font, cap.getBPM() + " BPM", x + 5, y + 5, 0xFFFFFF, true);
-        graphics.drawString(mc.font, (int)cap.getEnergy() + "% NRG", x + 5, y + HUD_HEIGHT - 15, 0x00AAFF, true);
+        // Dark background for the watch face
+        graphics.fill(0, 0, BASE_WIDTH, BASE_HEIGHT, 0x66000000);
 
+        // 2. LIMBS (Using provided U/V texture coordinates)
+        // drawLimb(graphics, screenX, screenY, texU, texV, width, height, percent)
+
+        // Head
+        drawLimb(graphics, 44, 5,  8,  8,  12, 12, cap.getHeadPct());
+        // Torso
+        drawLimb(graphics, 40, 18, 48, 12, 20, 26, cap.getTorsoPct());
+        // Arms
+        drawLimb(graphics, 28, 18, 84, 12, 12, 24, cap.getLArmPct());
+        drawLimb(graphics, 60, 18, 4,  52, 12, 24, cap.getRArmPct());
+        // Legs
+        drawLimb(graphics, 40, 45, 44, 50, 10, 22, cap.getLLegPct());
+        drawLimb(graphics, 50, 45, 84, 50, 10, 22, cap.getRLegPct());
+        // Feet (New Coordinates)
+        drawLimb(graphics, 38, 62, 5,  82, 11, 7,  cap.getLFootPct()); // Foot L (5, 82)
+        drawLimb(graphics, 51, 62, 45, 82, 11, 7,  cap.getRFootPct()); // Foot R (45, 82)
+
+        // BPM Text
+        graphics.drawString(mc.font, cap.getBPM() + " BPM", 5, 5, 0xFFFFFF, true);
+
+        graphics.pose().popPose();
         RenderSystem.disableBlend();
     };
 
+    /**
+     * Draws the rectangular status bars for Energy, Hunger, and Thirst.
+     */
+    private static void drawStatusBar(GuiGraphics graphics, Minecraft mc, int x, int y, float percent, int color, String label) {
+        int barWidth = 81;
+        int barHeight = 7;
+
+        graphics.fill(x, y, x + barWidth, y + barHeight, 0xFF222222);
+
+        int fillWidth = (int) ((percent / 100.0f) * (barWidth - 2));
+        if (fillWidth > 0) {
+            graphics.fill(x + 1, y + 1, x + 1 + fillWidth, y + barHeight - 1, color);
+        }
+
+        graphics.pose().pushPose();
+        graphics.pose().scale(0.5f, 0.5f, 0.5f);
+        graphics.drawString(mc.font, label, (x) * 2, (y - 6) * 2, color, true);
+        graphics.pose().popPose();
+    }
+
+    /**
+     * Draws a limb icon from the texture sheet with color-coding based on health.
+     */
     private static void drawLimb(GuiGraphics graphics, int x, int y, int u, int v, int width, int height, float pct) {
-        if (pct > 0.7f) RenderSystem.setShaderColor(0.2F, 1.0F, 0.2F, 1.0F);
-        else if (pct > 0.3f) RenderSystem.setShaderColor(1.0F, 1.0F, 0.2F, 1.0F);
-        else RenderSystem.setShaderColor(1.0F, 0.2F, 0.2F, 1.0F);
+        // Simple health-based coloring
+        if (pct > 0.7f) RenderSystem.setShaderColor(0.3F, 1.0F, 0.3F, 1.0F);      // Green (Healthy)
+        else if (pct > 0.3f) RenderSystem.setShaderColor(1.0F, 0.9F, 0.2F, 1.0F); // Yellow (Injured)
+        else RenderSystem.setShaderColor(1.0F, 0.2F, 0.2F, 1.0F);                // Red (Critical)
 
         graphics.blit(LIMBS_TEXTURE, x, y, u, v, width, height, 128, 128);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F); // Reset color
     }
 }
