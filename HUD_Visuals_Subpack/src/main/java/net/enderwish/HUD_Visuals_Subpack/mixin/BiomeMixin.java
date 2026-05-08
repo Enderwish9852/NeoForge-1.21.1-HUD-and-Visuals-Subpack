@@ -1,7 +1,5 @@
 package net.enderwish.HUD_Visuals_Subpack.mixin;
 
-import net.enderwish.HUD_Visuals_Subpack.api.ClimateHooks;
-import net.enderwish.HUD_Visuals_Subpack.client.ClientColorHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.Level;

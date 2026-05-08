@@ -12,15 +12,6 @@ public class ModAttachments {
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES =
             DeferredRegister.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, HUDVisualsSubpack.MOD_ID);
 
-    /**
-     * UPDATED: Renamed from WRIST_CAP to PLAYER_CAP.
-     * This holds BPM, Energy, Temp, Wetness, and Limb Health.
-     */
-    public static final DeferredHolder<AttachmentType<?>, AttachmentType<PlayerCapability>> PLAYER_CAP =
-            ATTACHMENT_TYPES.register("player_stats", () -> AttachmentType.builder(() -> new PlayerCapability()) // Use a lambda here
-                    .serialize(PlayerCapability.CODEC)
-                    .copyOnDeath()
-                    .build());
 
     /**
      * Climate State (Level-based)

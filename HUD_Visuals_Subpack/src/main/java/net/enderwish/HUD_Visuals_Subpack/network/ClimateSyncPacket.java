@@ -2,10 +2,8 @@ package net.enderwish.HUD_Visuals_Subpack.network;
 
 import net.enderwish.HUD_Visuals_Subpack.HUDVisualsSubpack;
 import net.enderwish.HUD_Visuals_Subpack.api.ClimateData;
-import net.enderwish.HUD_Visuals_Subpack.api.WeatherRegistry;
 import net.enderwish.HUD_Visuals_Subpack.api.WeatherType;
 import net.enderwish.HUD_Visuals_Subpack.client.ClientClimateCache;
-import net.enderwish.HUD_Visuals_Subpack.client.ClientColorHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.RegistryFriendlyByteBuf;

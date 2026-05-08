@@ -1,40 +1,46 @@
 package net.enderwish.HUD_Visuals_Subpack.api;
 
-import net.enderwish.HUD_Visuals_Subpack.core.Season;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 
 /**
- * A clean data container for the current world state.
- * Updated to support degree-based temperature offsets and Tag-ready weather IDs.
+ * A lightweight snapshot of the current world climate.
+ * Sent to the client to handle visuals and HUD updates.
  */
-public record ClimateData(Season season, int day, String weather, float intensity, float tempOffset) {
-
+public record ClimateData(
+        String seasonId,         // e.g., "mid_winter"
+        ResourceLocation weatherId, // e.g., "modid:blizzard"
+        float intensity,         // 0.001 to 1.0
+        int ticksRemaining,      // Remaining duration of current weather
+        boolean isSpecial        // True if 24000 ticks / 1.0 intensity
+) {
     public static final Codec<ClimateData> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
-                    Season.CODEC.fieldOf("season").forGetter(ClimateData::season),
-                    Codec.INT.fieldOf("day").forGetter(ClimateData::day),
-                    Codec.STRING.fieldOf("weather").forGetter(ClimateData::weather),
+                    Codec.STRING.fieldOf("season").forGetter(ClimateData::seasonId),
+                    ResourceLocation.CODEC.fieldOf("weather").forGetter(ClimateData::weatherId),
                     Codec.FLOAT.fieldOf("intensity").forGetter(ClimateData::intensity),
-                    // Holds the degree offset (e.g., -20 for Diamond Dust) [cite: 15]
-                    Codec.FLOAT.fieldOf("tempOffset").forGetter(ClimateData::tempOffset)
+                    Codec.INT.fieldOf("duration").forGetter(ClimateData::ticksRemaining),
+                    Codec.BOOL.fieldOf("special").forGetter(ClimateData::isSpecial)
             ).apply(instance, ClimateData::new)
     );
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ClimateData> STREAM_CODEC = StreamCodec.composite(
-            Season.STREAM_CODEC, ClimateData::season,
-            ByteBufCodecs.VAR_INT, ClimateData::day,
-            ByteBufCodecs.STRING_UTF8, ClimateData::weather,
+            ByteBufCodecs.STRING_UTF8, ClimateData::seasonId,
+            ResourceLocation.STREAM_CODEC, ClimateData::weatherId,
             ByteBufCodecs.FLOAT, ClimateData::intensity,
-            ByteBufCodecs.FLOAT, ClimateData::tempOffset,
+            ByteBufCodecs.VAR_INT, ClimateData::ticksRemaining,
+            ByteBufCodecs.BOOL, ClimateData::isSpecial,
             ClimateData::new
     );
 
+    /**
+     * Default state used when the world first loads.
+     */
     public static ClimateData getDefault() {
-        // Matches your document: Starts in Spring, Day 1, Clear weather [cite: 4, 5]
-        return new ClimateData(Season.SPRING, 1, "clear", 0.0f, 0.0f);
+        return new ClimateData("spring", ResourceLocation.withDefaultNamespace("clear"), 0.0f, 12000, false);
     }
 }

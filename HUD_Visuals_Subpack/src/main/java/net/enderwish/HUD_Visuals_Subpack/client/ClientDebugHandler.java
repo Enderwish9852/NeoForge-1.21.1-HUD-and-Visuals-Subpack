@@ -2,7 +2,6 @@ package net.enderwish.HUD_Visuals_Subpack.client;
 
 import net.enderwish.HUD_Visuals_Subpack.HUDVisualsSubpack;
 import net.enderwish.HUD_Visuals_Subpack.api.ClimateData;
-import net.enderwish.HUD_Visuals_Subpack.api.ClimateHooks;
 import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;

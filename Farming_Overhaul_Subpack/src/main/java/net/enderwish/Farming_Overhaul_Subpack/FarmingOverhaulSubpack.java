@@ -1,7 +1,6 @@
 package net.enderwish.Farming_Overhaul_Subpack;
 
 import net.enderwish.Farming_Overhaul_Subpack.block.ModBlocks;
-import net.enderwish.Farming_Overhaul_Subpack.event.SeasonGrowthListener;
 import net.enderwish.Farming_Overhaul_Subpack.event.VanillaTreeOverhaulListener;
 import net.enderwish.Farming_Overhaul_Subpack.init.ModBlockEntities;
 import net.enderwish.Farming_Overhaul_Subpack.world.TreeRemovalRegistry;
@@ -45,7 +44,6 @@ public class FarmingOverhaulSubpack {
 
         // 2. Register Global Event Listeners
         // This watches for sapling growth and climate changes
-        NeoForge.EVENT_BUS.register(SeasonGrowthListener.class);
         NeoForge.EVENT_BUS.register(VanillaTreeOverhaulListener.class);
 
         TreeRemovalRegistry.BIOME_MODIFIER_SERIALIZERS.register(modEventBus);

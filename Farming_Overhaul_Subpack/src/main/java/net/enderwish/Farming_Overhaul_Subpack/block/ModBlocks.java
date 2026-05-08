@@ -4,6 +4,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -45,12 +46,13 @@ public class ModBlocks {
             () -> new Branch(MapColor.WOOD));
 
     // --- THE GROWTH NODE (The Tree Anchor) ---
-    // This acts like the "Root" of the tree and holds the BlockEntity
+    // Added .randomTicks() to ensure the natural growth code in GrowthNodeBlock is called.
     public static final DeferredBlock<Block> GROWTH_NODE = BLOCKS.register("growth_node",
             () -> new GrowthNodeBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.DIRT)
                     .strength(0.6f)
-                    .sound(SoundType.GRAVEL)));
+                    .sound(SoundType.GRAVEL)
+                    .randomTicks()));
 
     public static final DeferredBlock<Block> OAK_ADAPTIVE_SAPLING = BLOCKS.register("oak_adaptive_sapling",
             () -> new AdaptiveSaplingBlock(BlockBehaviour.Properties.of()
@@ -58,7 +60,7 @@ public class ModBlocks {
                     .noCollission()
                     .instabreak()
                     .sound(SoundType.GRASS)
-                    .pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY)));
+                    .pushReaction(PushReaction.DESTROY)));
 
     // Simple register method for the main class
     public static void register(IEventBus eventBus) {

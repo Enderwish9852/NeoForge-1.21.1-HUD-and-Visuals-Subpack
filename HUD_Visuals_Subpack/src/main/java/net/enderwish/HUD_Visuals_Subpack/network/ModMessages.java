@@ -16,19 +16,7 @@ public class ModMessages {
         final PayloadRegistrar registrar = event.registrar(HUDVisualsSubpack.MOD_ID)
                 .versioned("1.0");
 
-        // 1. Limb Sync (Server -> Client)
-        registrar.playToClient(
-                LimbSyncPacket.TYPE,
-                LimbSyncPacket.STREAM_CODEC,
-                LimbSyncPacket::handle
-        );
 
-        // 2. Wrist Sync (Server -> Client)
-        registrar.playToClient(
-                WristSyncPacket.TYPE,
-                WristSyncPacket.STREAM_CODEC,
-                WristSyncPacket::handle
-        );
 
         // 3. Climate Sync (Server -> Client) - REQUIRED for Weather/Seasons
         registrar.playToClient(

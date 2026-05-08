@@ -1,10 +1,9 @@
 package net.enderwish.HUD_Visuals_Subpack.core.weather;
 
 import net.enderwish.HUD_Visuals_Subpack.api.ClimateData;
-import net.enderwish.HUD_Visuals_Subpack.api.WeatherRegistry;
 import net.enderwish.HUD_Visuals_Subpack.api.WeatherType;
 import net.enderwish.HUD_Visuals_Subpack.core.ModAttachments;
-import net.enderwish.HUD_Visuals_Subpack.core.Season;
+import net.enderwish.HUD_Visuals_Subpack.core.season.Season;
 import net.enderwish.HUD_Visuals_Subpack.network.ClimateSyncPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.network.PacketDistributor;

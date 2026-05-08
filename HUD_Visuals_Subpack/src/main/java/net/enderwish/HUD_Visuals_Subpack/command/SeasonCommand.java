@@ -5,7 +5,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.enderwish.HUD_Visuals_Subpack.api.ClimateData;
 import net.enderwish.HUD_Visuals_Subpack.core.ModAttachments;
-import net.enderwish.HUD_Visuals_Subpack.core.Season;
+import net.enderwish.HUD_Visuals_Subpack.core.season.Season;
 import net.enderwish.HUD_Visuals_Subpack.network.ClimateSyncPacket;
 import net.enderwish.HUD_Visuals_Subpack.network.ModMessages;
 import net.minecraft.commands.CommandSourceStack;

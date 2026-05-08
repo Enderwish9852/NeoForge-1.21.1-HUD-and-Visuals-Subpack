@@ -4,7 +4,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import net.enderwish.HUD_Visuals_Subpack.api.WeatherRegistry;
 import net.enderwish.HUD_Visuals_Subpack.api.WeatherType;
 import net.enderwish.HUD_Visuals_Subpack.core.weather.WeatherManager;
 import net.minecraft.commands.Commands;

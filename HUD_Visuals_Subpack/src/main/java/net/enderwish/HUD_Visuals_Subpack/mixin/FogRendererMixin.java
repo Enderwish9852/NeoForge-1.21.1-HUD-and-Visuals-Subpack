@@ -1,7 +1,6 @@
 package net.enderwish.HUD_Visuals_Subpack.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.enderwish.HUD_Visuals_Subpack.api.WeatherRegistry;
 import net.enderwish.HUD_Visuals_Subpack.api.WeatherType;
 import net.enderwish.HUD_Visuals_Subpack.client.ClientClimateCache;
 import net.minecraft.client.Camera;

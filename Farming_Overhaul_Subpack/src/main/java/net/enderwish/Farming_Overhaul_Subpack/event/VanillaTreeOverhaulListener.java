@@ -16,31 +16,38 @@ public class VanillaTreeOverhaulListener {
 
     @SubscribeEvent
     public static void onSaplingGrow(BlockGrowFeatureEvent event) {
-        // 1. Ensure we are on the server
-        if (!(event.getLevel() instanceof ServerLevel level)) return;
+        // 1. Ensure we are on the server and the event hasn't been canceled
+        if (!(event.getLevel() instanceof ServerLevel level) || event.isCanceled()) return;
+
         BlockPos pos = event.getPos();
         BlockState state = level.getBlockState(pos);
         TreeDNA dna = null;
 
-        // 2. Determine which DNA to use based on the sapling block
+        // 2. Determine which DNA to use based on the vanilla sapling type
         if (state.is(Blocks.OAK_SAPLING)) {
             dna = TreeDNA.OAK;
         } else if (state.is(Blocks.BIRCH_SAPLING)) {
             dna = TreeDNA.BIRCH;
         } else if (state.is(Blocks.SPRUCE_SAPLING)) {
             dna = TreeDNA.SPRUCE;
+        } else if (state.is(Blocks.JUNGLE_SAPLING)) {
+            dna = TreeDNA.JUNGLE;
         }
+        // Note: You can add Acacia and Dark Oak here once you define them in your TreeDNA class
 
-        // 3. Hijack
+        // 3. Hijack the growth process
         if (dna != null) {
-            // Cancel the vanilla tree feature from placing
+            // Cancel the vanilla tree feature placement so it doesn't spawn a vanilla tree
             event.setCanceled(true);
 
-            // Delete the sapling block immediately
+            // Clear the sapling block to make room for your custom trunk
             level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
 
-            // Run our custom branching math
-            BranchingMathCore.growTree(level, pos, dna.branchBlock());
+            // FIX: Pass the full 'dna' record instead of just dna.branchBlock()
+            BranchingMathCore.growTree(level, pos, dna);
+
+            // Debug log to confirm the hijack worked
+            System.out.println("Procedural VTO: Hijacked " + state.getBlock().getName().getString() + " at " + pos);
         }
     }
 }
